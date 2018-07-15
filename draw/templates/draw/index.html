@@ -28,9 +28,33 @@
     // getting the URL (you may want to use for Exercise 3)
     //var url = window.location.href;
 
+  
     // create websocket
     var socket = new WebSocket('ws://p4-FLinesse-joshua871210126271.codeanyapp.com:8765/');
   
+  //https://stackoverflow.com/questions/23051416/uncaught-invalidstateerror-failed-to-execute-send-on-websocket-still-in-co
+  function getRandomColor() {
+  var letters = '0123456789ABCDEF';
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+  
+  /* part 1b */
+  
+  // when starting: generate unique id, generate random color
+  // whenever move: 
+  //   make msg with point, id, color
+  // when receive: 
+  // check if in list of ids
+  //  if yes:
+  //    draw new path to color, id 
+  //  if no:
+  //    make new path, starting at point w/ appropriate color
+  
+  /* part 1a
     // setting up the canvas and one paper tool
 
   var roughPath = new paper.Path();
@@ -51,6 +75,9 @@
     //roughPath.lineTo(xCoord, yCoord)
 }
   
+  
+
+  
   socket.onmessage = function (event) {
     var msg = JSON.parse(event.data);
     var drawPoint = msg.text;
@@ -60,6 +87,7 @@
 
   //console.log(event.data);
 }
+*/
   
 
 
