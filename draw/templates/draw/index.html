@@ -17,22 +17,27 @@
 <body>
     <!-- You may change the dimensions of this canvas -->
     <canvas onmousemove="myFunction(event)" id="myCanvas" width="750px" height="750px"></canvas>
-</body>
-<script>
-
-    // setting up the canvas and one paper tool
-    var canvas = document.getElementById('myCanvas');
-    paper.setup(canvas);
-    var tool = new paper.Tool();
-
-    // getting the URL (you may want to use for Exercise 3)
-    //var url = window.location.href;
-
+  <script>
   
-    // create websocket
-    var socket = new WebSocket('ws://p4-FLinesse-joshua871210126271.codeanyapp.com:8765/');
+    
+    
+    
+    
+    
+  // setting up the canvas and one paper tool
+  var canvas = document.getElementById('myCanvas');
+  paper.setup(canvas);
+  var tool = new paper.Tool();
+
+    
+  // getting the URL (you may want to use for Exercise 3)
+  // var url = window.location.href;
   
-  //https://stackoverflow.com/questions/23051416/uncaught-invalidstateerror-failed-to-execute-send-on-websocket-still-in-co
+  // create websocket
+  var socket = new WebSocket('ws://p4-FLinesse-joshua871210126271.codeanyapp.com:8765/');
+  
+   /* part 1b
+  // https://stackoverflow.com/questions/23051416/uncaught-invalidstateerror-failed-to-execute-send-on-websocket-still-in-co
   function getRandomColor() {
   var letters = '0123456789ABCDEF';
   var color = '#';
@@ -40,26 +45,70 @@
     color += letters[Math.floor(Math.random() * 16)];
   }
   return color;
-}
+  }
+    
+     // when starting: generate random color, with ID equivalent to that color
+  var userID = getRandomColor();
+  // dictionary that holds IDs/colors and corresponding paths
+  var userIdDict = {};
   
-  /* part 1b */
   
-  // when starting: generate unique id, generate random color
-  // whenever move: 
-  //   make msg with point, id, color
-  // when receive: 
-  // check if in list of ids
-  //  if yes:
-  //    draw new path to color, id 
-  //  if no:
-  //    make new path, starting at point w/ appropriate color
-  
-  /* part 1a
+  //part 1a
     // setting up the canvas and one paper tool
 
   var roughPath = new paper.Path();
   roughPath.strokeColor = 'black';
 
+    function myFunction(event) {
+      // get x and y coords
+  var xCoord = event.clientX;
+  var yCoord = event.clientY;
+  
+  // create a new point
+  var sendPoint = new paper.Point(xCoord, yCoord);
+    
+  // create and send a message with the correct point and color/ID
+  var msg = {
+      type: "message",
+      point: sendPoint,
+      color: userID,  
+  }
+  
+  socket.send(JSON.stringify(msg));
+    
+    }
+    
+    
+      socket.onmessage = function (event) {
+     // parse user data
+    var msg = JSON.parse(event.data);
+    // get the point
+    var drawPoint = msg.point;
+    // get the color/userID
+    var color = msg.color;
+    
+    //roughPath.lineTo(drawPoint[1], drawPoint[2]);
+
+        console.log(userIdDict[color]);
+        
+        if (userIdDict[color]) {
+      
+      console.log("found a current path");
+      console.log("color: " + color);
+      console.log("point: " + drawPoint);
+     // get the corresponding path
+      curPath = userIdDict[color];
+      // draw a line for that path
+      curPath.lineTo(drawPoint[1], drawPoint[2]);
+  
+    } 
+  //console.log(event.data);
+}
+
+*/
+    
+    
+    /* part 1a
   function myFunction(event) {
  
     var xCoord = event.clientX;
@@ -75,9 +124,6 @@
     //roughPath.lineTo(xCoord, yCoord)
 }
   
-  
-
-  
   socket.onmessage = function (event) {
     var msg = JSON.parse(event.data);
     var drawPoint = msg.text;
@@ -88,8 +134,14 @@
   //console.log(event.data);
 }
 */
+
+
+  </script>
+</body>
+
+  
   
 
 
-</script>
+
 </html>
