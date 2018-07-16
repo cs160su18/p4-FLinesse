@@ -9,18 +9,18 @@
     <link rel="stylesheet" type="text/css" href="{% static 'draw/vendor/bootstrap/css/bootstrap.min.css' %}">
     <script type="text/javascript" src="{% static 'draw/vendor/jquery/jquery-3.3.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'draw/vendor/paper/paper-full.min.js' %}"></script>
-
-    <style type="text/css">
-    </style>
+    <script type="text/javascript" src="https://cdn.rawgit.com/alexgibson/shake.js/master/shake.js"></script>
+    <style type="text/css"></style>
 
 </head>
+
 <body>
     <!-- You may change the dimensions of this canvas -->
-    <canvas onmousemove="myFunction(event)" id="myCanvas" width="750px" height="750px"></canvas>
-  <script>
   
-    
-    
+     <canvas onmousemove="myFunction(event)" id="myCanvas" width="750px" height="750px" style="border: 1px solid black; vertical-align: middle;"></canvas>
+  
+ 
+  <script>
   // setting up the canvas and one paper tool
   var canvas = document.getElementById('myCanvas');
   paper.setup(canvas);
@@ -29,32 +29,99 @@
     
   
   // create websocket 
+    
   var socket = new WebSocket('ws://p4-FLinesse-joshua871210126271.codeanyapp.com:8765/');
   
-    
-    
-    
-   
-    
+
   // https://stackoverflow.com/questions/23051416/uncaught-invalidstateerror-failed-to-execute-send-on-websocket-still-in-co
   function getRandomColor() {
-  var letters = '0123456789ABCDEF';
-  var color = '#';
-  for (var i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
   }
     
-     // when starting: generate random color, with ID equivalent to that color
+    
+  // when starting: generate random color, with ID equivalent to that color
   var userID = getRandomColor();
+    
   // dictionary that holds IDs/colors and corresponding paths
   var userIdDict = {};
   
  
-    // getting the URL (you may want to use for Exercise 3)
+  // getting the URL (you may want to use for Exercise 3)
   var url = window.location.href;
   
+   
+    
+    /*
+  //part 1a
+    
+  var roughPath = new paper.Path();
+  roughPath.strokeColor = 'black';
+    
+  function myFunction(event) {
+ 
+    var xCoord = event.clientX;
+    var yCoord = event.clientY;
+    
+    var sendPoint = new paper.Point(xCoord, yCoord);
+    var msg = {
+      type: "message",
+      text: sendPoint,
+    }
+    socket.send(JSON.stringify(msg));
+    
+    //roughPath.lineTo(xCoord, yCoord)
+  }
+  
+  socket.onmessage = function (event) {
+    var msg = JSON.parse(event.data);
+    var drawPoint = msg.text;
+    roughPath.strokeColor = 'black';
+    //console.log(drawPoint);
+    roughPath.lineTo(drawPoint[1], drawPoint[2]);
+
+  
+    }
+  
+    // shake phone, clear canvas
+  if (String(url).indexOf('orientation') != -1) {
+    var prevGamma = 0;
+    window.addEventListener('deviceorientation', function(event) {
+      var curGamma = event.gamma;
+      if (curGamma < 0) {
+        prevGamma = -180;
+      }
+      if ((curGamma - prevGamma) > 0) {
+        prevGamma = curGamma
+        roughPath.strokeColor = getRandomColor();
+        console.log("we are seeing orientation")
+      }
+      prevGamma = curGamma
+    });
+    }
+    
+    if (String(url).indexOf('shake') != -1) {
+    var shakeEvent = new Shake({threshold: 15});
+    shakeEvent.start();
+     
+      
+    window.addEventListener('shake', function(){
+       //alert("Shaked");
+       roughPath.remove();
+      
+    }, false);
+    
+
+    //check if shake is supported or not.
+    if(!("ondevicemotion" in window)){alert("Not Supported");}
+    // tilt to the right, change stroke color  
+    }
+    */
+   
    /*
      // part 1c
     function myFunction(event) {
@@ -72,9 +139,9 @@
         color: userID,  
       }
   
-     //if(socket.readyState == 1) {
+    
      socket.send(JSON.stringify(msg));
-     //}
+     
      }
     
     
@@ -89,29 +156,31 @@
      //roughPath.lineTo(drawPoint[1], drawPoint[2]);
 
      //console.log(userIdDict[color]);
-      
+     
+     //custom interaction
      console.log(color);
+       
      if (url.includes("large")) {
-     if (userIdDict[color]) {
-      
-      console.log("found a current path");
-      console.log("color: " + color);
-      console.log("point: " + drawPoint);
-      // get the corresponding path
-      curPath = userIdDict[color];
-      // draw a line for that path
-      curPath.lineTo(drawPoint[1], drawPoint[2]);
-  
+       if (userIdDict[color]) {
+
+        console.log("found a current path");
+        console.log("color: " + color);
+        console.log("point: " + drawPoint);
+        // get the corresponding path
+        curPath = userIdDict[color];
+        // draw a line for that path
+        curPath.lineTo(drawPoint[1], drawPoint[2]);
+
+      } else {
+        //create a ath
+        var curPath = new paper.Path();
+        curPath.strokeColor = color;
+
+        curPath.lineTo(drawPoint[1], drawPoint[2]);
+        userIdDict[color] = curPath;
+      }
      } else {
-      //create a ath
-      var curPath = new paper.Path();
-      curPath.strokeColor = color;
-      
-      curPath.lineTo(drawPoint[1], drawPoint[2]);
-      userIdDict[color] = curPath;
-    }
-     } else {
-        if (userIdDict[color] && color == userID) {
+      if (userIdDict[color] && color == userID) {
       
       console.log("found a current path");
       console.log("color: " + color);
@@ -129,40 +198,40 @@
       curPath.lineTo(drawPoint[1], drawPoint[2]);
       userIdDict[color] = curPath;
     }
-       
-     }
+  }
        
     //console.log(event.data);
 }
+
    */
    
     
-  /*
-    // part 1b
-    function myFunction(event) {
-      // get x and y coords
-  var xCoord = event.clientX;
-  var yCoord = event.clientY;
   
-  // create a new point
-  var sendPoint = new paper.Point(xCoord, yCoord);
+  // part 1b
+  function myFunction(event) {
+    // get x and y coords
+    var xCoord = event.clientX;
+    var yCoord = event.clientY;
+  
+    // create a new point
+    var sendPoint = new paper.Point(xCoord, yCoord);
     
-  // create and send a message with the correct point and color/ID
-  var msg = {
+    // create and send a message with the correct point and color/ID
+    var msg = {
       type: "message",
       point: sendPoint,
       color: userID,  
-  }
-  
-  //if(socket.readyState == 1) {
-  socket.send(JSON.stringify(msg));
-  //}
-    
     }
+  
+  
+  socket.send(JSON.stringify(msg));
+
+    
+  }
     
     
-      socket.onmessage = function (event) {
-     // parse user data
+  socket.onmessage = function (event) {
+    // parse user data
     var msg = JSON.parse(event.data);
     // get the point
     var drawPoint = msg.point;
@@ -171,45 +240,49 @@
     
     //roughPath.lineTo(drawPoint[1], drawPoint[2]);
 
-        //console.log(userIdDict[color]);
+    //console.log(userIdDict[color]);
         
-        console.log(color);
-        if (userIdDict[color]) {
-      
+    console.log(color);
+    
+    var log = document.getElementById('log');
+       
+    if (msg.type == "textmessage") {
+      console.log(event);
+      log.innerHTML += msg.id + ": " + msg.text + "<br>";
+
+    } 
+    if (userIdDict[color]) {
       console.log("found a current path");
       console.log("color: " + color);
       console.log("point: " + drawPoint);
-     // get the corresponding path
+      // get the corresponding path
       curPath = userIdDict[color];
       // draw a line for that path
       curPath.lineTo(drawPoint[1], drawPoint[2]);
-  
     } else {
-      //create a ath
+      //create a path
       var curPath = new paper.Path();
       curPath.strokeColor = color;
       
       curPath.lineTo(drawPoint[1], drawPoint[2]);
       userIdDict[color] = curPath;
     }
-  //console.log(event.data);
-}
+    //console.log(event.data);
+  }
       
       
-*/
+
 
     
     /*
-    //part 1a
+  //part 1a
     
-    var roughPath = new paper.Path();
-    roughPath.strokeColor = 'black';
+  var roughPath = new paper.Path();
+  roughPath.strokeColor = 'black';
     
   function myFunction(event) {
- 
     var xCoord = event.clientX;
     var yCoord = event.clientY;
-    
     var sendPoint = new paper.Point(xCoord, yCoord);
     var msg = {
       type: "message",
@@ -218,7 +291,7 @@
     socket.send(JSON.stringify(msg));
     
     //roughPath.lineTo(xCoord, yCoord)
-}
+  }
   
   socket.onmessage = function (event) {
     var msg = JSON.parse(event.data);
@@ -227,13 +300,35 @@
     //console.log(drawPoint);
     roughPath.lineTo(drawPoint[1], drawPoint[2]);
 
-  //console.log(event.data);
-}
+  }
   */
-
-
-
+  
+  
   </script>
+   
+  <div id="log">
+  </div>
+  <input type="text" placeholder="Your message here..." id="text">
+  <button>
+    Send
+  </button>
+  
+  <script>
+    
+    //custom interaction
+    document.querySelector('button').onclick = function() {
+      var msg = {
+        type: "textmessage",
+        text: document.getElementById('text').value,
+        id: userID,
+      }
+      
+      socket.send(JSON.stringify(msg));
+      console.log("message sent!");
+    }
+    
+  </script>
+  
 </body>
 
   
