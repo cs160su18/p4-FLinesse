@@ -36,7 +36,11 @@
   // create websocket
   var socket = new WebSocket('ws://p4-FLinesse-joshua871210126271.codeanyapp.com:8765/');
   
-   /* part 1b
+    
+    
+    
+   
+    
   // https://stackoverflow.com/questions/23051416/uncaught-invalidstateerror-failed-to-execute-send-on-websocket-still-in-co
   function getRandomColor() {
   var letters = '0123456789ABCDEF';
@@ -52,13 +56,16 @@
   // dictionary that holds IDs/colors and corresponding paths
   var userIdDict = {};
   
-  
-  //part 1a
-    // setting up the canvas and one paper tool
-
-  var roughPath = new paper.Path();
-  roughPath.strokeColor = 'black';
-
+ 
+    // find the correct url
+  // based on this url, do differen things to the screen
+  // if small, only draw from your own id
+  // if large, draw from every ID
+    
+   
+    
+    /*
+    // part 1b
     function myFunction(event) {
       // get x and y coords
   var xCoord = event.clientX;
@@ -74,7 +81,9 @@
       color: userID,  
   }
   
+  if(socket.readyState == 1) {
   socket.send(JSON.stringify(msg));
+  }
     
     }
     
@@ -89,8 +98,9 @@
     
     //roughPath.lineTo(drawPoint[1], drawPoint[2]);
 
-        console.log(userIdDict[color]);
+        //console.log(userIdDict[color]);
         
+        console.log(color);
         if (userIdDict[color]) {
       
       console.log("found a current path");
@@ -101,11 +111,19 @@
       // draw a line for that path
       curPath.lineTo(drawPoint[1], drawPoint[2]);
   
-    } 
+    } else {
+      //create a ath
+      var curPath = new paper.Path();
+      curPath.strokeColor = color;
+      
+      curPath.lineTo(drawPoint[1], drawPoint[2]);
+      userIdDict[color] = curPath;
+    }
   //console.log(event.data);
 }
+      */
 
-*/
+
     
     
     /* part 1a
