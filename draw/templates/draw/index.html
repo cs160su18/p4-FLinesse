@@ -21,19 +21,14 @@
   
     
     
-    
-    
-    
   // setting up the canvas and one paper tool
   var canvas = document.getElementById('myCanvas');
   paper.setup(canvas);
   var tool = new paper.Tool();
 
     
-  // getting the URL (you may want to use for Exercise 3)
-  // var url = window.location.href;
   
-  // create websocket
+  // create websocket 
   var socket = new WebSocket('ws://p4-FLinesse-joshua871210126271.codeanyapp.com:8765/');
   
     
@@ -57,14 +52,92 @@
   var userIdDict = {};
   
  
-    // find the correct url
-  // based on this url, do differen things to the screen
-  // if small, only draw from your own id
-  // if large, draw from every ID
+    // getting the URL (you may want to use for Exercise 3)
+  var url = window.location.href;
+  
+   /*
+     // part 1c
+    function myFunction(event) {
+      // get x and y coords
+      var xCoord = event.clientX;
+      var yCoord = event.clientY;
+  
+      // create a new point
+      var sendPoint = new paper.Point(xCoord, yCoord);
     
+      // create and send a message with the correct point and color/ID
+      var msg = {
+        type: "message",
+        point: sendPoint,
+        color: userID,  
+      }
+  
+     //if(socket.readyState == 1) {
+     socket.send(JSON.stringify(msg));
+     //}
+     }
+    
+    
+     socket.onmessage = function (event) {
+     // parse user data
+     var msg = JSON.parse(event.data);
+     // get the point
+     var drawPoint = msg.point;
+     // get the color/userID
+     var color = msg.color;
+    
+     //roughPath.lineTo(drawPoint[1], drawPoint[2]);
+
+     //console.log(userIdDict[color]);
+      
+     console.log(color);
+     if (url.includes("large")) {
+     if (userIdDict[color]) {
+      
+      console.log("found a current path");
+      console.log("color: " + color);
+      console.log("point: " + drawPoint);
+      // get the corresponding path
+      curPath = userIdDict[color];
+      // draw a line for that path
+      curPath.lineTo(drawPoint[1], drawPoint[2]);
+  
+     } else {
+      //create a ath
+      var curPath = new paper.Path();
+      curPath.strokeColor = color;
+      
+      curPath.lineTo(drawPoint[1], drawPoint[2]);
+      userIdDict[color] = curPath;
+    }
+     } else {
+        if (userIdDict[color] && color == userID) {
+      
+      console.log("found a current path");
+      console.log("color: " + color);
+      console.log("point: " + drawPoint);
+      // get the corresponding path
+      curPath = userIdDict[color];
+      // draw a line for that path
+      curPath.lineTo(drawPoint[1], drawPoint[2]);
+  
+     } else if (color == userID) {
+      //create a ath
+      var curPath = new paper.Path();
+      curPath.strokeColor = color;
+      
+      curPath.lineTo(drawPoint[1], drawPoint[2]);
+      userIdDict[color] = curPath;
+    }
+       
+     }
+       
+    //console.log(event.data);
+}
+   */
    
     
-    /*
+  /*
     // part 1b
     function myFunction(event) {
       // get x and y coords
@@ -81,9 +154,9 @@
       color: userID,  
   }
   
-  if(socket.readyState == 1) {
+  //if(socket.readyState == 1) {
   socket.send(JSON.stringify(msg));
-  }
+  //}
     
     }
     
@@ -121,12 +194,17 @@
     }
   //console.log(event.data);
 }
-      */
-
+      
+      
+*/
 
     
+    /*
+    //part 1a
     
-    /* part 1a
+    var roughPath = new paper.Path();
+    roughPath.strokeColor = 'black';
+    
   function myFunction(event) {
  
     var xCoord = event.clientX;
@@ -146,12 +224,13 @@
     var msg = JSON.parse(event.data);
     var drawPoint = msg.text;
     roughPath.strokeColor = 'black';
-    
+    //console.log(drawPoint);
     roughPath.lineTo(drawPoint[1], drawPoint[2]);
 
   //console.log(event.data);
 }
-*/
+  */
+
 
 
   </script>
